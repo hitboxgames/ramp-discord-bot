@@ -16,7 +16,7 @@ async function fetchRampAccessToken() {
 
     const requestBody = new URLSearchParams({
       grant_type: "client_credentials",
-      scope: "transactions:read",
+      scope: "users:write",
     });
 
     const response = await axios.post(
@@ -26,8 +26,6 @@ async function fetchRampAccessToken() {
         headers: headers,
       }
     );
-    console.log(response);
-
     const { access_token, expires_in } = response.data;
     rampAccessToken = access_token;
     tokenExpiresAt = Date.now() + expires_in * 1000;

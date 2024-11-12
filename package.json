@@ -14,10 +14,14 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/nodemailer": "^6.4.16",
     "axios": "^1.7.7",
     "date-fns": "^4.1.0",
     "discord.js": "^14.16.3",
-    "dotenv": "^16.4.5"
+    "dotenv": "^16.4.5",
+    "google-auth-library": "^9.14.2",
+    "google-spreadsheet": "^4.1.4",
+    "nodemailer": "^6.9.16"
   },
   "devDependencies": {
     "eslint": "^9.14.0",

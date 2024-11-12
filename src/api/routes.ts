@@ -1,3 +1,5 @@
+import { InvitePayload } from "../commands/invite";
+import { RampRole } from "../types/roles";
 import { getLastWeekRange } from "../utils/dates";
 import apiClient from "./ramp";
 
@@ -27,10 +29,69 @@ export async function fetchRecentTransactions() {
   }
 }
 
+export async function fetchUserByEmail(email: string) {
+  try {
+    const response = await apiClient.get("/users", {
+      params: { email },
+    });
+
+    if (!response.data?.data) {
+      console.log("No user found with this specified email");
+      return null;
+    }
+
+    const users = response.data.data;
+    const user = users.find(
+      (u: any) => u.email.toLowerCase() === email.toLowerCase()
+    );
+
+    if (user) {
+      console.log(`Found user:`, user);
+      return user;
+    }
+
+    return null;
+  } catch (error: any) {
+    console.error("Error fetching user:", {
+      status: error.response?.status,
+      message: error.response?.data?.error_v2,
+      email: email,
+    });
+    throw error;
+  }
+}
+
+export async function createUserInvite(
+  email: string,
+  first_name: string,
+  last_name: string,
+  role: RampRole
+) {
+  try {
+    const response = await apiClient.post("/users/deferred", {
+      params: { email, first_name, last_name, role },
+    });
+
+    if (response.status === 201) {
+      console.log("Async user invite created successfully");
+    } else {
+      console.error("Failed to create user invite. Response:", response.data);
+    }
+  } catch (error: any) {
+    console.error("Error inviting user:", {
+      status: error.response?.status,
+      message: error.response?.data?.error_v2,
+    });
+    throw error;
+  }
+}
+
 export async function createPhysicalCard(user_id: string) {
   try {
     const response = await apiClient.post("/cards/deferred/physical", {
-      user_id,
+      params: {
+        user_id,
+      },
     });
 
     if (response.status === 200) {
@@ -47,7 +108,9 @@ export async function createPhysicalCard(user_id: string) {
 export async function createVirtualCard(user_id: string) {
   try {
     const response = await apiClient.post("/cards/deferred/virtual", {
-      user_id,
+      params: {
+        user_id,
+      },
     });
 
     if (response.status === 200) {

@@ -50,12 +50,10 @@ function createTransactionMessage(transaction: any): {
   content: string;
   components: ActionRowBuilder<ButtonBuilder>[];
 } {
-  // Defensive check for required transaction object
   if (!transaction) {
     throw new Error("No transaction data provided");
   }
 
-  // Safely get card holder details
   const cardHolder = transaction.card_holder
     ? `${transaction.card_holder.first_name || ""} ${
         transaction.card_holder.last_name || ""
@@ -70,7 +68,6 @@ function createTransactionMessage(transaction: any): {
 > **Merchant**: ${transaction.merchant_name || "N/A"}
 > **Category**: ${transaction.sk_category_name || "N/A"}`;
 
-  // Create button to view transaction
   const button = new ButtonBuilder()
     .setLabel("View Transaction")
     .setStyle(ButtonStyle.Link)

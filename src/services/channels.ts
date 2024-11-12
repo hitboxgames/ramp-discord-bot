@@ -11,7 +11,6 @@ async function findOrCreateChannel(
   const guild = await client.guilds.fetch(guildId);
   const channels = await guild.channels.fetch();
 
-  // Safely filter through the channels
   const existingChannel = channels.find(
     (channel): channel is TextChannel =>
       channel?.type === ChannelType.GuildText && channel.name === channelName
@@ -22,7 +21,6 @@ async function findOrCreateChannel(
     return existingChannel;
   }
 
-  // Create the channel if it doesn't exist
   const newChannel = await guild.channels.create({
     name: channelName,
     type: ChannelType.GuildText,
