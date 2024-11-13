@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.3.0](https://github.com/hitboxgames/ramp-discord-bot/compare/v1.2.1...v1.3.0) (2024-11-13)
+
+
+### Features
+
+* auto add manager role from Ramp ([c1062e2](https://github.com/hitboxgames/ramp-discord-bot/commit/c1062e28e0c946741ba8da42b587c7c9c016dcc0))
+
 ### [1.2.1](https://github.com/hitboxgames/ramp-discord-bot/compare/v1.2.0...v1.2.1) (2024-11-13)
 
 
