@@ -82,35 +82,52 @@ export async function sendTransactionMessages(
   client: Client,
   transactions: any[]
 ) {
-  const { TEXT_CHANNEL_ALERTS } = await getSheetsConfig();
+  const { TEXT_CHANNEL_ALERTS, LARGE_TRANSACTION } = await getSheetsConfig();
 
-  if (!TEXT_CHANNEL_ALERTS || TEXT_CHANNEL_ALERTS.length === 0) {
-    console.error("No channels specified in TEXT_CHANNEL_ALERTS");
-    return;
+  console.log(TEXT_CHANNEL_ALERTS, LARGE_TRANSACTION);
+
+  const guildId = SecretConfig.GUILD_ID;
+  const channel = await findOrCreateChannel(
+    client,
+    guildId,
+    TEXT_CHANNEL_ALERTS
+  );
+
+  if (!channel) {
+    console.error(
+      `Channel ${TEXT_CHANNEL_ALERTS} could not be found or created`
+    );
+    throw new Error(
+      `Channel ${TEXT_CHANNEL_ALERTS} could not be found or created`
+    );
   }
 
-  for (const channelName of TEXT_CHANNEL_ALERTS) {
-    const guildId = SecretConfig.GUILD_ID;
-    const channel = await findOrCreateChannel(client, guildId, channelName);
+  for (const transaction of transactions) {
+    const isLargeTransaction = transaction.amount >= LARGE_TRANSACTION;
+    const { content, components } = createTransactionMessage(
+      transaction,
+      isLargeTransaction
+    );
 
-    if (!channel) {
-      console.error(`Channel ${channelName} could not be found or created`);
-      continue;
-    }
+    try {
+      await channel.send({ content, components });
 
-    for (const transaction of transactions) {
-      const { content, components } = createTransactionMessage(transaction);
-
-      try {
-        await channel.send({ content, components });
-        console.log(`Transaction alert sent to channel: ${channelName}`);
-      } catch (error) {
-        console.error(`Error sending message to ${channelName}:`, error);
+      if (isLargeTransaction) {
+        const alertMessage = createLargeTransactionAlert(transaction);
+        await channel.send(alertMessage);
       }
+
+      console.log(`Transaction alert sent to channel: ${TEXT_CHANNEL_ALERTS}`);
+    } catch (error) {
+      console.error(`Error sending message to ${TEXT_CHANNEL_ALERTS}:`, error);
     }
   }
 }
-function createTransactionMessage(transaction: any): {
+
+function createTransactionMessage(
+  transaction: any,
+  isLargeTransaction: boolean
+): {
   content: string;
   components: ActionRowBuilder<ButtonBuilder>[];
 } {
@@ -125,6 +142,7 @@ function createTransactionMessage(transaction: any): {
     : "N/A";
 
   const content = `
+${isLargeTransaction ? "🚨 **LARGE TRANSACTION ALERT**" : ""}
 > **Card Holder**: ${cardHolder}
 > **Amount**: ${formatAmount(transaction.amount)} ${
     transaction.currency_code || "USD"
@@ -143,6 +161,23 @@ function createTransactionMessage(transaction: any): {
     content,
     components: [row],
   };
+}
+
+function createLargeTransactionAlert(transaction: any): string {
+  const cardHolder = transaction.card_holder
+    ? `${transaction.card_holder.first_name || ""} ${
+        transaction.card_holder.last_name || ""
+      }`.trim()
+    : "N/A";
+
+  return `@here **LARGE TRANSACTION DETECTED**
+> A transaction exceeding the configured threshold has been recorded
+> **Amount**: ${formatAmount(transaction.amount)}
+> **Card Holder**: ${cardHolder}
+> **Merchant**: ${transaction.merchant_name || "N/A"}
+> **Category**: ${transaction.sk_category_name || "N/A"}
+> 
+> Please review this transaction as soon as possible.`;
 }
 
 function formatAmount(amount: number | null | undefined): string {
