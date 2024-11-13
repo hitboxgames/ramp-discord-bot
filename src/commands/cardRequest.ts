@@ -19,8 +19,9 @@ import {
 } from "../utils/validate";
 import { findOrCreateRampBusinessAlertsChannel } from "../services/channels";
 import { hasEmployeeRole, hasManagerRole, ROLE_NAMES } from "../services/roles";
-import { createPhysicalCard, createVirtualCard } from "../ramp/routes";
+import { createVirtualCard } from "../ramp/routes/cards";
 import { getVerifiedUserByDiscordId } from "../db/sheets";
+import { getSheetsConfig } from "../db/config";
 
 interface CardRequest {
   cardName: string;
@@ -39,6 +40,16 @@ export async function executeCardRequest(
   interaction: ChatInputCommandInteraction
 ) {
   try {
+    const config = await getSheetsConfig();
+
+    if (!config.NEW_CARD_REQUESTS) {
+      await interaction.reply({
+        content: "New card requests are currently disabled.",
+        ephemeral: true,
+      });
+      return;
+    }
+
     if (
       !hasEmployeeRole(interaction.member as GuildMember) &&
       !hasManagerRole(interaction.member as GuildMember)

@@ -1,5 +1,5 @@
 import { Client } from "discord.js";
-import { fetchTransactionsByDateRange } from "../ramp/routes";
+import { fetchTransactionsByDateRange } from "../ramp/routes/transactions";
 import { sendTransactionMessages } from "../services/messages";
 import { getLastFiveMinutesRange } from "../utils/dates";
 
@@ -35,6 +35,7 @@ export async function startTransactionMonitoring(client: Client) {
   await monitorTransactions(client);
 
   setInterval(async () => {
+    console.log(`Checking for new transactions.`);
     await monitorTransactions(client);
   }, 5 * 60 * 1000);
 }

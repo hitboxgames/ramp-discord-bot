@@ -15,11 +15,10 @@ export interface SheetsConfig {
 let SheetsConfig: SheetsConfig | null = null;
 
 export async function getSheetsConfig(): Promise<SheetsConfig> {
-  console.log(SheetsConfig)
+  console.log(SheetsConfig);
   if (!SheetsConfig) {
     console.log("Loading configuration from sheet...");
-    const configData = await loadConfigFromSheet();
-    SheetsConfig = configData as SheetsConfig;
+    SheetsConfig = await loadConfigFromSheet();
   }
   return SheetsConfig;
 }

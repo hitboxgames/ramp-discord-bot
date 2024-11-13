@@ -10,7 +10,7 @@ import {
   getLastMonthRange,
 } from "../utils/dates";
 
-import { fetchTransactionsByDateRange } from "../ramp/routes";
+import { fetchTransactionsByDateRange } from "../ramp/routes/transactions";
 import { findOrCreateRampTransactionsChannel } from "../services/channels";
 import { sendReport } from "../services/messages";
 import { hasManagerRole } from "../services/roles";

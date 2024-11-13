@@ -11,7 +11,7 @@ import {
   ButtonBuilder,
   ButtonStyle,
 } from "discord.js";
-import { fetchUserByEmail } from "../ramp/routes";
+import { fetchUserByEmail } from "../ramp/routes/users";
 import { sendVerificationEmail, verifyCode } from "../services/verify";
 import { addVerifiedUser } from "../db/sheets";
 import { ROLE_NAMES } from "../services/roles";

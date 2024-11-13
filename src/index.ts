@@ -30,6 +30,7 @@ import { executeInvite, handleInviteModal } from "./commands/invite";
 import { executeReport } from "./commands/report";
 import { startTransactionMonitoring } from "./alerts/transactions";
 import { scanChannels } from "./db/sheets";
+import { getSheetsConfig } from "./db/config";
 
 const client = new Client({
   intents: [GatewayIntentBits.Guilds],
@@ -63,7 +64,8 @@ client.once(Events.ClientReady, async (readyClient) => {
   await deployCommands();
   await setupRampRoles(guild);
   await startTransactionMonitoring(client);
-  await scanChannels(client)
+  await scanChannels(client);
+  await getSheetsConfig();
   await findOrCreateRampTransactionsChannel(client, SecretConfig.GUILD_ID);
   await findOrCreateRampBusinessAlertsChannel(client, SecretConfig.GUILD_ID);
 });

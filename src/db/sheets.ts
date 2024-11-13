@@ -5,6 +5,7 @@ import {
 import { JWT } from "google-auth-library";
 import { SecretConfig } from "../config";
 import { ChannelType, Client } from "discord.js";
+import { SheetsConfig } from "./config";
 
 const verifiedHeaders = [
   "discordId",
@@ -35,8 +36,6 @@ export async function initializeSheet() {
     const configSheet = doc.sheetsByIndex[1];
     const channelSheet = doc.sheetsByIndex[2];
 
-    console.log(verifiedSheet, configSheet, channelSheet);
-
     await setupHeaders(verifiedSheet, verifiedHeaders);
     await setupHeaders(configSheet, configHeaders);
     await setupHeaders(channelSheet, channelHeaders);
@@ -59,7 +58,7 @@ async function setupHeaders(
   }
 }
 
-export async function loadConfigFromSheet() {
+export async function loadConfigFromSheet(): Promise<SheetsConfig> {
   try {
     const { configSheet } = await initializeSheet();
 
@@ -71,9 +70,9 @@ export async function loadConfigFromSheet() {
     const configData: Record<string, any> = {};
 
     rows.forEach((row) => {
-      const key = row.get("Key");
-      const value = row.get("Value");
-      const type = row.get("Type");
+      const key = row.get("key");
+      const value = row.get("value");
+      const type = row.get("type");
 
       switch (type) {
         case "number":
@@ -85,6 +84,7 @@ export async function loadConfigFromSheet() {
         case "Multiselect":
           configData[key] = value.split(",").map((item: string) => item.trim());
           break;
+        case "string":
         default:
           configData[key] = value;
       }
@@ -92,7 +92,7 @@ export async function loadConfigFromSheet() {
 
     console.log(configData);
 
-    return configData;
+    return configData as SheetsConfig;
   } catch (error) {
     console.error("Error loading config from sheet:", error);
     throw error;
