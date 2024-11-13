@@ -1,4 +1,4 @@
-![ramp logo](./assets/ramp-logo.jpeg)
+<img src="./assets/ramp-logo.jpeg" alt="ramp-logo" width="200"/>
 
 # Ramp Discord Bot
 
