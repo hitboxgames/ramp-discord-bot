@@ -161,12 +161,23 @@ export async function handleCodeSubmit(interaction: ModalSubmitInteraction) {
     const employeeRole = interaction.guild?.roles.cache.find(
       (role) => role.name === ROLE_NAMES.EMPLOYEE
     );
+    const managerRole = interaction.guild?.roles.cache.find(
+      (role) => role.name === ROLE_NAMES.MANAGER
+    );
 
-    if (!verifiedRole || !employeeRole) {
-      throw new Error("Verified or Employee role not found");
+    if (!verifiedRole || !employeeRole || !managerRole) {
+      throw new Error("Verified, Employee, or Manager role not found");
     }
 
-    await member.roles.add([verifiedRole, employeeRole]);
+    const rolesToAdd = [verifiedRole];
+
+    if (rampUser.is_manager) {
+      rolesToAdd.push(managerRole);
+    } else {
+      rolesToAdd.push(employeeRole);
+    }
+
+    await member.roles.add(rolesToAdd);
     await interaction.editReply({
       content:
         "✅ Your email has been verified! You now have access to Ramp commands.",

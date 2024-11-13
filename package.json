@@ -4,12 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "release:minor": "standard-version --release-as minor",
-    "release:patch": "standard-version --release-as patch",
-    "release:major": "standard-version --release-as major",
     "dev": "tsx watch src/index.ts",
     "start": "node dist/index.js",
     "build": "tsup src/index.ts --minify",
+    "release:minor": "standard-version --release-as minor && git push",
+    "release:patch": "standard-version --release-as patch && git push",
+    "release:major": "standard-version --release-as major && git push",
     "deploy-commands": "node dist/deploy-commands.js"
   },
   "keywords": [],

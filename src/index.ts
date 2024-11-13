@@ -61,11 +61,15 @@ client.once(Events.ClientReady, async (readyClient) => {
     return;
   }
 
+  const config = await getSheetsConfig();
+
+  if (config.NEW_CARD_REQUESTS) {
+    await startTransactionMonitoring(client)
+  } 
+
   await deployCommands();
   await setupRampRoles(guild);
-  await startTransactionMonitoring(client);
   await scanChannels(client);
-  await getSheetsConfig();
   await findOrCreateRampTransactionsChannel(client, SecretConfig.GUILD_ID);
   await findOrCreateRampBusinessAlertsChannel(client, SecretConfig.GUILD_ID);
 });
