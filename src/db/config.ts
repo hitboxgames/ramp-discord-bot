@@ -1,14 +1,10 @@
 import { loadConfigFromSheet } from "./sheets";
 
 export interface SheetsConfig {
-  POLL_INTERVAL: number;
-  BUSINESS_LIMIT: number;
+  MONITOR_TRANSACTIONS: boolean;
   LARGE_TRANSACTION: number;
   NEW_CARD_REQUESTS: boolean;
   MONTHLY_SPEND_REPORT: boolean;
-  STATEMENTS: boolean;
-  SAVINGS_INSIGHT: boolean;
-  WEEKLY_MISSING_ITEMS: boolean;
   TEXT_CHANNEL_ALERTS: string;
 }
 

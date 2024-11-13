@@ -63,9 +63,9 @@ client.once(Events.ClientReady, async (readyClient) => {
 
   const config = await getSheetsConfig();
 
-  if (config.NEW_CARD_REQUESTS) {
-    await startTransactionMonitoring(client)
-  } 
+  if (config.MONITOR_TRANSACTIONS) {
+    await startTransactionMonitoring(client);
+  }
 
   await deployCommands();
   await setupRampRoles(guild);
