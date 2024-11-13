@@ -1,10 +1,12 @@
 {
   "name": "ramp-discord-bot",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "release:minor": "standard-version --release-as minor",
+    "release:patch": "standard-version --release-as patch",
+    "release:major": "standard-version --release-as major",
     "dev": "tsx watch src/index.ts",
     "start": "node dist/index.js",
     "build": "tsup src/index.ts --minify",
@@ -22,6 +24,7 @@
     "google-auth-library": "^9.14.2",
     "google-spreadsheet": "^4.1.4",
     "nodemailer": "^6.9.16",
+    "standard-version": "^9.5.0",
     "uuid": "^11.0.3"
   },
   "devDependencies": {
