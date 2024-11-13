@@ -63,7 +63,7 @@ The bot uses a Google Spreadsheet for configuration. The spreadsheet should have
 ### 1. Verified Users Sheet
 
 Tracks verified users and their associations:
-| discordId | rampId | rampRole | email | verifiedAt |
+| **discordId** | **rampId** | **rampRole** | **email** | **verifiedAt** |
 |-----|-------|------|-------------|
 | 19169470762411123225 | 01932303-145e-7126-abdb-19a8128c13e3 | BUSINESS_USER | raul@hitbox.gg | 2024-11-13T01:02:30.623Z |
 | 1953367850253023428 | bf578552-483f-48b2-8658-92907d2bdb9b | BUSINESS_OWNER | gino@hitbox.gg | 2024-11-13T18:35:52.023Z |
@@ -82,7 +82,7 @@ Contains bot settings:
 ### 3. Channels Sheet
 
 Maintains Discord channel mappings:
-| channel_name | channel_id |
+| **channel_name** | **channel_id** |
 |-----|-------|------|-------------|
 | pitch-deck | 1060971429455204463 |
 | design-general | 1042881930678501407 |
