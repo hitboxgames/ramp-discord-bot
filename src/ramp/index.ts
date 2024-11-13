@@ -1,5 +1,5 @@
 import axios, { AxiosHeaders, InternalAxiosRequestConfig } from "axios";
-import { AppConfig } from "../config";
+import { SecretConfig } from "../config";
 
 let rampAccessToken: string | null = null;
 let tokenExpiresAt: number | null = null;
@@ -9,14 +9,14 @@ async function fetchRampAccessToken() {
     const headers = {
       Accept: "application/json",
       Authorization: `Basic ${btoa(
-        `${AppConfig.RAMP_CLIENT_ID}:${AppConfig.RAMP_CLIENT_SECRET}`
+        `${SecretConfig.RAMP_CLIENT_ID}:${SecretConfig.RAMP_CLIENT_SECRET}`
       )}`,
       "Content-Type": "application/x-www-form-urlencoded",
     };
 
     const requestBody = new URLSearchParams({
       grant_type: "client_credentials",
-      scope: "users:read users:write transactions:read",
+      scope: "users:read users:write transactions:read cards:read cards:write",
     });
 
     const response = await axios.post(
@@ -52,11 +52,11 @@ async function getValidRampAccessToken() {
   return rampAccessToken;
 }
 
-const apiClient = axios.create({
+const ramp = axios.create({
   baseURL: "https://demo-api.ramp.com/developer/v1/",
 });
 
-apiClient.interceptors.request.use(
+ramp.interceptors.request.use(
   async (config: InternalAxiosRequestConfig) => {
     const token = await getValidRampAccessToken();
 
@@ -72,4 +72,4 @@ apiClient.interceptors.request.use(
   }
 );
 
-export default apiClient;
+export default ramp;

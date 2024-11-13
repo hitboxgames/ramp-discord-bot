@@ -1,8 +1,25 @@
-import { startOfDay, endOfDay, subDays } from "date-fns";
+import {
+  startOfDay,
+  endOfDay,
+  subDays,
+  startOfMinute,
+  subMinutes,
+} from "date-fns";
 
 interface DateRange {
-  fromDate: string;
-  toDate: string;
+  fromDate: Date;
+  toDate: Date;
+}
+
+export function getLastFiveMinutesRange() {
+  const now = new Date();
+  const start = startOfMinute(subMinutes(now, 5));
+  const end = startOfMinute(now);
+
+  return {
+    fromDate: start,
+    toDate: end,
+  };
 }
 
 export function getTodayRange(): DateRange {
@@ -10,8 +27,8 @@ export function getTodayRange(): DateRange {
   const end = endOfDay(new Date());
 
   return {
-    fromDate: start.toISOString(),
-    toDate: end.toISOString(),
+    fromDate: start,
+    toDate: end,
   };
 }
 
@@ -21,8 +38,8 @@ export function getYesterdayRange(): DateRange {
   const end = endOfDay(yesterday);
 
   return {
-    fromDate: start.toISOString(),
-    toDate: end.toISOString(),
+    fromDate: start,
+    toDate: end,
   };
 }
 
@@ -31,8 +48,8 @@ export function getLastWeekRange(): DateRange {
   const end = endOfDay(new Date());
 
   return {
-    fromDate: start.toISOString(),
-    toDate: end.toISOString(),
+    fromDate: start,
+    toDate: end,
   };
 }
 
@@ -41,7 +58,7 @@ export function getLastMonthRange(): DateRange {
   const end = endOfDay(new Date());
 
   return {
-    fromDate: start.toISOString(),
-    toDate: end.toISOString(),
+    fromDate: start,
+    toDate: end,
   };
 }

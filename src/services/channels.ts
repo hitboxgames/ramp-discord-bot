@@ -1,9 +1,6 @@
 import { Client, TextChannel, ChannelType } from "discord.js";
 
-let rampTransactionsChannelId: string | null = null;
-let rampBusinessAlertsChannelId: string | null = null;
-
-async function findOrCreateChannel(
+export async function findOrCreateChannel(
   client: Client,
   guildId: string,
   channelName: string
@@ -40,7 +37,6 @@ export async function findOrCreateRampTransactionsChannel(
     guildId,
     "ramp-transactions"
   );
-  rampTransactionsChannelId = channel.id;
   return channel;
 }
 
@@ -53,6 +49,5 @@ export async function findOrCreateRampBusinessAlertsChannel(
     guildId,
     "ramp-business-alerts"
   );
-  rampBusinessAlertsChannelId = channel.id;
   return channel;
 }

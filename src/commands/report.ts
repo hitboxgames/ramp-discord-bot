@@ -10,9 +10,9 @@ import {
   getLastMonthRange,
 } from "../utils/dates";
 
-import { fetchTransactionsByDateRange } from "../api/routes";
+import { fetchTransactionsByDateRange } from "../ramp/routes";
 import { findOrCreateRampTransactionsChannel } from "../services/channels";
-import { sendReport } from "../services/transactions";
+import { sendReport } from "../services/messages";
 import { hasManagerRole } from "../services/roles";
 
 export const command = new SlashCommandBuilder()

@@ -1,5 +1,5 @@
 import nodemailer from "nodemailer";
-import { AppConfig } from "../config";
+import { SecretConfig } from "../config";
 
 const verificationCodes: Map<
   string,
@@ -9,8 +9,8 @@ const verificationCodes: Map<
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
-    user: AppConfig.GMAIL_ADDRESS,
-    pass: AppConfig.GMAIL_APP_PASSWORD,
+    user: SecretConfig.GMAIL_ADDRESS,
+    pass: SecretConfig.GMAIL_APP_PASSWORD,
   },
 });
 
@@ -28,7 +28,7 @@ export async function sendVerificationEmail(
     });
 
     await transporter.sendMail({
-      from: AppConfig.GMAIL_ADDRESS,
+      from: SecretConfig.GMAIL_ADDRESS,
       to: email,
       subject: "Verify Your Ramp Discord Integration",
       html: `

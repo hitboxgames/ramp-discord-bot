@@ -3,7 +3,11 @@ import {
   ButtonBuilder,
   ActionRowBuilder,
   ButtonStyle,
+  Client,
 } from "discord.js";
+import { getSheetsConfig } from "../db/config";
+import { SecretConfig } from "../config";
+import { findOrCreateChannel } from "./channels";
 
 export async function sendReport(
   channel: TextChannel,
@@ -74,6 +78,38 @@ export async function sendReport(
   await channel.send(summary);
 }
 
+export async function sendTransactionMessages(
+  client: Client,
+  transactions: any[]
+) {
+  const { TEXT_CHANNEL_ALERTS } = await getSheetsConfig();
+
+  if (!TEXT_CHANNEL_ALERTS || TEXT_CHANNEL_ALERTS.length === 0) {
+    console.error("No channels specified in TEXT_CHANNEL_ALERTS");
+    return;
+  }
+
+  for (const channelName of TEXT_CHANNEL_ALERTS) {
+    const guildId = SecretConfig.GUILD_ID;
+    const channel = await findOrCreateChannel(client, guildId, channelName);
+
+    if (!channel) {
+      console.error(`Channel ${channelName} could not be found or created`);
+      continue;
+    }
+
+    for (const transaction of transactions) {
+      const { content, components } = createTransactionMessage(transaction);
+
+      try {
+        await channel.send({ content, components });
+        console.log(`Transaction alert sent to channel: ${channelName}`);
+      } catch (error) {
+        console.error(`Error sending message to ${channelName}:`, error);
+      }
+    }
+  }
+}
 function createTransactionMessage(transaction: any): {
   content: string;
   components: ActionRowBuilder<ButtonBuilder>[];

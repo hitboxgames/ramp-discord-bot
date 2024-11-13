@@ -1,13 +1,13 @@
 import { RampRole } from "../types/roles";
 import { v4 as uuidv4 } from "uuid";
-import apiClient from "./ramp";
+import ramp from ".";
 
 export async function fetchTransactionsByDateRange(
-  fromDate: string,
-  toDate: string
+  fromDate: Date,
+  toDate: Date
 ) {
   try {
-    const response = await apiClient.get("/transactions", {
+    const response = await ramp.get("/transactions", {
       params: {
         from_date: fromDate,
         to_date: toDate,
@@ -30,7 +30,7 @@ export async function fetchTransactionsByDateRange(
 
 export async function fetchUserByEmail(email: string) {
   try {
-    const response = await apiClient.get("/users", {
+    const response = await ramp.get("/users", {
       params: { email },
     });
 
@@ -75,7 +75,7 @@ export async function createUserInvite(
       role,
       idempotency_key: idempotencyKey,
     };
-    const response = await apiClient.post("/users/deferred", payload);
+    const response = await ramp.post("/users/deferred", payload);
 
     console.log(response);
 
@@ -94,43 +94,73 @@ export async function createUserInvite(
 }
 
 export async function createPhysicalCard(
-  display_name: string,
-  amount: string,
-  user_id: string
+  user_id: string,
+  lock_date?: string,
+  display_name?: string,
+  amount?: string,
+  interval?: string
 ) {
   try {
-    const response = await apiClient.post("/cards/deferred/physical", {
-      params: {
-        user_id,
+    const idempotency_key = uuidv4();
+    const payload = {
+      display_name,
+      idempotency_key,
+      spending_restrictions: {
+        amount,
+        interval,
+        lock_date,
       },
-    });
+      user_id,
+    };
+    const response = await ramp.post("/cards/deferred/physical", payload);
 
     if (response.status === 200) {
       console.log("Physical card created successfully");
+      return response.data.id
     } else {
       console.error("Failed to create physical card. Status:", response.status);
     }
-  } catch (error) {
-    console.error("Error creating physical card:", error);
+  } catch (error: any) {
+    console.error("Error creating physical card:", {
+      status: error.response?.status,
+      message: error.response?.data?.error_v2,
+    });
     throw error;
   }
 }
 
-export async function createVirtualCard(user_id: string) {
+export async function createVirtualCard(
+  user_id: string,
+  lock_date?: string,
+  display_name?: string,
+  amount?: string,
+  interval?: string
+) {
   try {
-    const response = await apiClient.post("/cards/deferred/virtual", {
-      params: {
-        user_id,
+    const idempotency_key = uuidv4();
+    const payload = {
+      display_name,
+      idempotency_key,
+      spending_restrictions: {
+        amount,
+        interval,
+        lock_date,
       },
-    });
+      user_id,
+    };
+    const response = await ramp.post("/cards/deferred/virtual", payload);
 
     if (response.status === 200) {
       console.log("Virtual card created successfully");
+      return response.data.id
     } else {
       console.error("Failed to create virtual card. Status:", response.status);
     }
-  } catch (error) {
-    console.error("Error creating virtual card:", error);
+  } catch (error: any) {
+    console.error("Error creating virtual card:", {
+      status: error.response?.status,
+      message: error.response?.data?.error_v2,
+    });
     throw error;
   }
 }

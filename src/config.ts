@@ -30,7 +30,7 @@ if (
   throw new Error("Missing environment variables");
 }
 
-export const AppConfig = {
+export const SecretConfig = {
   DISCORD_TOKEN,
   DISCORD_ID,
   RAMP_CLIENT_ID,

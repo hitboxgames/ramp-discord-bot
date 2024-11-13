@@ -9,7 +9,7 @@ import {
   GuildMember,
 } from "discord.js";
 import { hasManagerRole, ROLE_NAMES } from "../services/roles";
-import { createUserInvite } from "../api/routes";
+import { createUserInvite } from "../ramp/routes";
 import { RampRole, roleMap } from "../types/roles";
 
 export interface InvitePayload {

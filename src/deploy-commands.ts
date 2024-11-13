@@ -1,5 +1,5 @@
 import { REST, Routes } from "discord.js";
-import { AppConfig } from "./config";
+import { SecretConfig } from "./config";
 import { command as cardRequestCommand } from "./commands/cardRequest";
 import { command as verifyCommand } from "./commands/verify";
 import { command as inviteCommand } from "./commands/invite";
@@ -24,17 +24,17 @@ export async function deployCommands() {
       commands.map((cmd) => cmd.name)
     );
 
-    const rest = new REST().setToken(AppConfig.DISCORD_TOKEN);
+    const rest = new REST().setToken(SecretConfig.DISCORD_TOKEN);
 
     console.log("Started refreshing application (/) commands.");
 
     await rest.put(
-      Routes.applicationGuildCommands(AppConfig.DISCORD_ID, AppConfig.GUILD_ID),
+      Routes.applicationGuildCommands(SecretConfig.DISCORD_ID, SecretConfig.GUILD_ID),
       { body: [] }
     );
 
     await rest.put(
-      Routes.applicationGuildCommands(AppConfig.DISCORD_ID, AppConfig.GUILD_ID),
+      Routes.applicationGuildCommands(SecretConfig.DISCORD_ID, SecretConfig.GUILD_ID),
       { body: commands }
     );
 

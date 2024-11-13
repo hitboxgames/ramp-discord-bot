@@ -7,7 +7,7 @@ import {
   ButtonInteraction,
   Interaction,
 } from "discord.js";
-import { AppConfig } from "./config";
+import { SecretConfig } from "./config";
 import {
   findOrCreateRampTransactionsChannel,
   findOrCreateRampBusinessAlertsChannel,
@@ -28,6 +28,8 @@ import {
 import { deployCommands } from "./deploy-commands";
 import { executeInvite, handleInviteModal } from "./commands/invite";
 import { executeReport } from "./commands/report";
+import { startTransactionMonitoring } from "./alerts/transactions";
+import { scanChannels } from "./db/sheets";
 
 const client = new Client({
   intents: [GatewayIntentBits.Guilds],
@@ -52,16 +54,18 @@ const handleInteractionError = async (
 client.once(Events.ClientReady, async (readyClient) => {
   console.log(`Ready! Logged in as ${readyClient.user.tag}`);
 
-  const guild = await client.guilds.fetch(AppConfig.GUILD_ID);
+  const guild = await client.guilds.fetch(SecretConfig.GUILD_ID);
   if (!guild) {
-    console.error("Could not find guild with ID:", AppConfig.GUILD_ID);
+    console.error("Could not find guild with ID:", SecretConfig.GUILD_ID);
     return;
   }
 
   await deployCommands();
   await setupRampRoles(guild);
-  await findOrCreateRampTransactionsChannel(client, AppConfig.GUILD_ID);
-  await findOrCreateRampBusinessAlertsChannel(client, AppConfig.GUILD_ID);
+  await startTransactionMonitoring(client);
+  await scanChannels(client)
+  await findOrCreateRampTransactionsChannel(client, SecretConfig.GUILD_ID);
+  await findOrCreateRampBusinessAlertsChannel(client, SecretConfig.GUILD_ID);
 });
 
 client.on("interactionCreate", async (interaction: Interaction) => {
@@ -130,4 +134,4 @@ client.on(Events.Error, (error) => {
   console.error("Discord client error:", error);
 });
 
-client.login(AppConfig.DISCORD_TOKEN);
+client.login(SecretConfig.DISCORD_TOKEN);

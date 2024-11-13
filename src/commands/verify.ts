@@ -11,7 +11,7 @@ import {
   ButtonBuilder,
   ButtonStyle,
 } from "discord.js";
-import { fetchUserByEmail } from "../api/routes";
+import { fetchUserByEmail } from "../ramp/routes";
 import { sendVerificationEmail, verifyCode } from "../services/verify";
 import { addVerifiedUser } from "../db/sheets";
 import { ROLE_NAMES } from "../services/roles";
@@ -51,7 +51,6 @@ export async function handleEmailSubmit(interaction: ModalSubmitInteraction) {
   try {
     const email = interaction.fields.getTextInputValue("email").toLowerCase();
 
-    // Email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       await interaction.reply({
@@ -61,7 +60,6 @@ export async function handleEmailSubmit(interaction: ModalSubmitInteraction) {
       return;
     }
 
-    // Check Ramp user
     const rampUser = await fetchUserByEmail(email);
     if (!rampUser) {
       await interaction.reply({
@@ -72,7 +70,6 @@ export async function handleEmailSubmit(interaction: ModalSubmitInteraction) {
       return;
     }
 
-    // Send verification email
     const emailSent = await sendVerificationEmail(interaction.user.id, email);
     if (!emailSent) {
       await interaction.reply({
@@ -82,7 +79,6 @@ export async function handleEmailSubmit(interaction: ModalSubmitInteraction) {
       return;
     }
 
-    // Create a button to show the verification code modal
     const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
       new ButtonBuilder()
         .setCustomId("enterVerificationCode")
@@ -108,7 +104,6 @@ export async function handleEmailSubmit(interaction: ModalSubmitInteraction) {
   }
 }
 
-// Add this new handler for the button click
 export async function handleVerificationButton(interaction: ButtonInteraction) {
   const modal = new ModalBuilder()
     .setCustomId("verifyCodeModal")
@@ -128,7 +123,6 @@ export async function handleVerificationButton(interaction: ButtonInteraction) {
   await interaction.showModal(modal);
 }
 
-// Updated code submit handler
 export async function handleCodeSubmit(interaction: ModalSubmitInteraction) {
   try {
     const code = interaction.fields.getTextInputValue("code");
