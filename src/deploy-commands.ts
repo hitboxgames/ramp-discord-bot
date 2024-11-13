@@ -1,17 +1,19 @@
-// src/deploy-commands.ts
 import { REST, Routes } from "discord.js";
 import { AppConfig } from "./config";
 import { command as cardRequestCommand } from "./commands/cardRequest";
 import { command as verifyCommand } from "./commands/verify";
 import { command as inviteCommand } from "./commands/invite";
+import { command as reportCommand } from "./commands/report";
 
 export async function deployCommands() {
   try {
     const commandsMap = new Map();
 
-    [cardRequestCommand, verifyCommand, inviteCommand].forEach((cmd) => {
-      commandsMap.set(cmd.name, cmd);
-    });
+    [cardRequestCommand, verifyCommand, inviteCommand, reportCommand].forEach(
+      (cmd) => {
+        commandsMap.set(cmd.name, cmd);
+      }
+    );
 
     const commands = Array.from(commandsMap.values()).map((cmd) =>
       cmd.toJSON()

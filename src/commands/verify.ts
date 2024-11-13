@@ -134,6 +134,10 @@ export async function handleCodeSubmit(interaction: ModalSubmitInteraction) {
     const code = interaction.fields.getTextInputValue("code");
     const result = verifyCode(interaction.user.id, code);
 
+    if (!result.email) {
+      throw Error;
+    }
+
     if (!result.valid) {
       await interaction.reply({
         content: result.message,
@@ -142,23 +146,33 @@ export async function handleCodeSubmit(interaction: ModalSubmitInteraction) {
       return;
     }
 
-    // Defer reply for longer operations
     await interaction.deferReply({ ephemeral: true });
 
-    if (result.email) {
-      await addVerifiedUser(interaction.user.id, result.email);
+    const rampUser = await fetchUserByEmail(result.email);
+    if (!rampUser || !rampUser.id || !rampUser.role) {
+      throw new Error("Ramp user or user ID not found during verification.");
     }
+
+    await addVerifiedUser(
+      interaction.user.id,
+      result.email,
+      rampUser.id,
+      rampUser.role
+    );
 
     const member = interaction.member as GuildMember;
     const verifiedRole = interaction.guild?.roles.cache.find(
       (role) => role.name === ROLE_NAMES.VERIFIED
     );
+    const employeeRole = interaction.guild?.roles.cache.find(
+      (role) => role.name === ROLE_NAMES.EMPLOYEE
+    );
 
-    if (!verifiedRole) {
-      throw new Error("Verified role not found");
+    if (!verifiedRole || !employeeRole) {
+      throw new Error("Verified or Employee role not found");
     }
 
-    await member.roles.add(verifiedRole);
+    await member.roles.add([verifiedRole, employeeRole]);
     await interaction.editReply({
       content:
         "✅ Your email has been verified! You now have access to Ramp commands.",

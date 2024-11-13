@@ -1,8 +1,9 @@
 import { GoogleSpreadsheet } from "google-spreadsheet";
 import { JWT } from "google-auth-library";
 import { AppConfig } from "../config";
+import { RampRole } from "../types/roles";
 
-const HEADERS = ["discordId", "email", "verifiedAt"];
+const HEADERS = ["discordId", "rampId", "rampRole", "email", "verifiedAt"];
 
 const serviceAccountAuth = new JWT({
   email: AppConfig.GOOGLE_SERVICE_ACCOUNT_EMAIL,
@@ -44,7 +45,9 @@ async function initializeSheet() {
 
 export async function addVerifiedUser(
   discordId: string,
-  email: string
+  email: string,
+  rampId: string,
+  role: string
 ): Promise<void> {
   try {
     const sheet = await initializeSheet();
@@ -63,11 +66,17 @@ export async function addVerifiedUser(
 
     await sheet.addRow({
       discordId: discordId,
+      rampId: rampId,
+      rampRole: role,
       email: email,
       verifiedAt: new Date().toISOString(),
     });
 
-    console.log("User verified and added to sheet:", { discordId, email });
+    console.log("User verified and added to sheet:", {
+      discordId,
+      email,
+      rampId,
+    });
   } catch (error) {
     console.error("Error adding verified user:", error);
     throw error;

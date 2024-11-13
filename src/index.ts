@@ -27,6 +27,7 @@ import {
 } from "./commands/verify";
 import { deployCommands } from "./deploy-commands";
 import { executeInvite, handleInviteModal } from "./commands/invite";
+import { executeReport } from "./commands/report";
 
 const client = new Client({
   intents: [GatewayIntentBits.Guilds],
@@ -106,6 +107,9 @@ client.on("interactionCreate", async (interaction: Interaction) => {
           break;
         case "invite":
           await executeInvite(interaction);
+          break;
+        case "report":
+          await executeReport(interaction);
           break;
       }
     }

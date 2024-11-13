@@ -21,7 +21,8 @@
     "dotenv": "^16.4.5",
     "google-auth-library": "^9.14.2",
     "google-spreadsheet": "^4.1.4",
-    "nodemailer": "^6.9.16"
+    "nodemailer": "^6.9.16",
+    "uuid": "^11.0.3"
   },
   "devDependencies": {
     "eslint": "^9.14.0",

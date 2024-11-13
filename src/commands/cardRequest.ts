@@ -33,11 +33,16 @@ export const command = new SlashCommandBuilder()
   .setDescription("Request a new card")
   .setDefaultMemberPermissions("0");
 
-export async function executeCardRequest(interaction: ChatInputCommandInteraction) {
+export async function executeCardRequest(
+  interaction: ChatInputCommandInteraction
+) {
   try {
-    if (!hasEmployeeRole(interaction.member as GuildMember)) {
+    if (
+      !hasEmployeeRole(interaction.member as GuildMember) &&
+      !hasManagerRole(interaction.member as GuildMember)
+    ) {
       await interaction.reply({
-        content: `You need the "${ROLE_NAMES.EMPLOYEE}" role to request cards.`,
+        content: `You need the "${ROLE_NAMES.EMPLOYEE}" or "${ROLE_NAMES.MANAGER}" role to request cards.`,
         ephemeral: true,
       });
       return;
@@ -230,7 +235,9 @@ export async function sendCardRequest(channel: TextChannel, message: string) {
   });
 }
 
-export async function handleCardButtonInteraction(interaction: ButtonInteraction) {
+export async function handleCardButtonInteraction(
+  interaction: ButtonInteraction
+) {
   if (
     ![
       "approve_card",

@@ -1,18 +1,17 @@
-import { InvitePayload } from "../commands/invite";
 import { RampRole } from "../types/roles";
-import { getLastWeekRange } from "../utils/dates";
+import { v4 as uuidv4 } from "uuid";
 import apiClient from "./ramp";
 
-export async function fetchRecentTransactions() {
+export async function fetchTransactionsByDateRange(
+  fromDate: string,
+  toDate: string
+) {
   try {
-    const dateRange = getLastWeekRange();
-
     const response = await apiClient.get("/transactions", {
       params: {
-        from_date: dateRange.fromDate,
-        to_date: dateRange.toDate,
+        from_date: fromDate,
+        to_date: toDate,
         order_by_date_desc: true,
-        page_size: 10,
       },
     });
 
@@ -68,9 +67,17 @@ export async function createUserInvite(
   role: RampRole
 ) {
   try {
-    const response = await apiClient.post("/users/deferred", {
-      params: { email, first_name, last_name, role },
-    });
+    const idempotencyKey = uuidv4();
+    const payload = {
+      email,
+      first_name,
+      last_name,
+      role,
+      idempotency_key: idempotencyKey,
+    };
+    const response = await apiClient.post("/users/deferred", payload);
+
+    console.log(response);
 
     if (response.status === 201) {
       console.log("Async user invite created successfully");
@@ -86,7 +93,11 @@ export async function createUserInvite(
   }
 }
 
-export async function createPhysicalCard(user_id: string) {
+export async function createPhysicalCard(
+  display_name: string,
+  amount: string,
+  user_id: string
+) {
   try {
     const response = await apiClient.post("/cards/deferred/physical", {
       params: {

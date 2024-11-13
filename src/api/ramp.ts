@@ -16,7 +16,7 @@ async function fetchRampAccessToken() {
 
     const requestBody = new URLSearchParams({
       grant_type: "client_credentials",
-      scope: "users:write",
+      scope: "users:read users:write transactions:read",
     });
 
     const response = await axios.post(

@@ -1,49 +1,77 @@
 import {
-  Client,
   TextChannel,
   ButtonBuilder,
   ActionRowBuilder,
   ButtonStyle,
 } from "discord.js";
-import { fetchRecentTransactions } from "../api/routes";
-import { findOrCreateRampTransactionsChannel } from "./channels";
 
-export async function sendRecentTransactionsToChannel(
-  client: Client,
-  guildId: string
+export async function sendReport(
+  channel: TextChannel,
+  transactions: any[],
+  reportTitle: string
 ) {
-  try {
-    const channel = await findOrCreateRampTransactionsChannel(client, guildId);
-    if (!channel) {
-      throw new Error("Failed to access transactions channel");
-    }
-
-    const transactions = await fetchRecentTransactions();
-    await sendTransactions(channel, transactions);
-  } catch (error) {
-    console.error("Failed to process transactions:", error);
-    throw error;
-  }
-}
-
-async function sendTransactions(channel: TextChannel, transactions: any[]) {
   if (!transactions?.length) {
     await channel.send("No transactions found for the specified period.");
     return;
   }
 
-  for (const transaction of transactions) {
-    try {
-      const message = createTransactionMessage(transaction);
-      await channel.send(message);
-    } catch (error) {
-      console.error("Error formatting transaction:", error);
-      console.error(
-        "Problematic transaction:",
-        JSON.stringify(transaction, null, 2)
-      );
+  const totalSpent = transactions.reduce(
+    (sum, transaction) => sum + transaction.amount,
+    0
+  );
+
+  const userSpending: { [userId: string]: { name: string; amount: number } } =
+    {};
+  const categorySpending: { [categoryName: string]: number } = {};
+
+  transactions.forEach((transaction) => {
+    const { card_holder, amount, sk_category_name } = transaction;
+    if (card_holder && card_holder.user_id) {
+      const { user_id, first_name, last_name } = card_holder;
+      const name = `${first_name} ${last_name}`;
+      userSpending[user_id] = {
+        name,
+        amount: (userSpending[user_id]?.amount || 0) + amount,
+      };
     }
-  }
+
+    if (sk_category_name) {
+      categorySpending[sk_category_name] =
+        (categorySpending[sk_category_name] || 0) + amount;
+    }
+  });
+
+  const topUsers = Object.values(userSpending)
+    .sort((a, b) => b.amount - a.amount)
+    .slice(0, 3);
+
+  const topCategories = Object.entries(categorySpending)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 3)
+    .map(([categoryName, amount]) => ({ categoryName, amount }));
+
+  const summary = `
+    ${reportTitle}
+    > **Total Amount Spent:** ${formatAmount(totalSpent)}
+    > **Top Spenders:**
+    ${topUsers
+      .map(
+        (user, index) =>
+          `> ${index + 1}. ${user.name}: ${formatAmount(user.amount)}`
+      )
+      .join("\n")}
+    > **Top Categories:**
+    ${topCategories
+      .map(
+        (category, index) =>
+          `> ${index + 1}. ${category.categoryName}: ${formatAmount(
+            category.amount
+          )}`
+      )
+      .join("\n")}
+    `;
+
+  await channel.send(summary);
 }
 
 function createTransactionMessage(transaction: any): {

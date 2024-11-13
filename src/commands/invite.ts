@@ -10,12 +10,7 @@ import {
 } from "discord.js";
 import { hasManagerRole, ROLE_NAMES } from "../services/roles";
 import { createUserInvite } from "../api/routes";
-
-export enum RampRole {
-  ADMIN = "Admin",
-  CARDHOLDER = "Cardholder",
-  BOOKKEEPER = "Bookkeeper",
-}
+import { RampRole, roleMap } from "../types/roles";
 
 export interface InvitePayload {
   email: string;
@@ -66,7 +61,7 @@ export async function executeInvite(interaction: ChatInputCommandInteraction) {
 
     const roleInput = new TextInputBuilder()
       .setCustomId("role")
-      .setLabel("Role (Admin/Cardholder/Bookkeeper)")
+      .setLabel("Role (ADMIN, USER, BOOKKEEPER)")
       .setStyle(TextInputStyle.Short)
       .setPlaceholder("Enter role")
       .setRequired(true);
@@ -97,7 +92,7 @@ export async function handleInviteModal(interaction: ModalSubmitInteraction) {
     const lastName = interaction.fields.getTextInputValue("lastName");
     const roleInput = interaction.fields
       .getTextInputValue("role")
-      .toLowerCase();
+      .toUpperCase();
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
@@ -108,13 +103,11 @@ export async function handleInviteModal(interaction: ModalSubmitInteraction) {
       return;
     }
 
-    const role = Object.values(RampRole).find(
-      (r) => r.toLowerCase() === roleInput
-    );
+    const role = roleMap[roleInput];
 
     if (!role) {
       await interaction.reply({
-        content: "Invalid role. Please use Admin, Cardholder, or Bookkeeper.",
+        content: "Invalid role. Please use User role.",
         ephemeral: true,
       });
       return;
@@ -124,7 +117,8 @@ export async function handleInviteModal(interaction: ModalSubmitInteraction) {
       await createUserInvite(email, firstName, lastName, role);
 
       await interaction.reply({
-        content: `✅ Invite sent successfully to ${firstName} ${lastName} (${email}) as ${role}.`,
+        content: `✅ Invite sent successfully to ${firstName} ${lastName} (${email}) as ${role}. 
+        Please let them know once they accept, to do /verify on discord to connect their Ramp account.`,
         ephemeral: true,
       });
     } catch (error) {
