@@ -1,3 +1,5 @@
+![ramp logo](./assets/ramp-logo.jpeg)
+
 # Ramp Discord Bot
 
 A Discord bot that integrates with Ramp's corporate card platform to help manage expenses, track transactions, and coordinate team spending directly from Discord.
@@ -61,19 +63,16 @@ The bot uses a Google Spreadsheet for configuration. The spreadsheet should have
 ### 1. Verified Users Sheet
 
 Tracks verified users and their associations:
-
-- discordId
-- rampId
-- rampRole
-- email
-- verifiedAt
+| discordId | rampId | rampRole | email | verifiedAt |
+|-----|-------|------|-------------|
+| 19169470762411123225 | 01932303-145e-7126-abdb-19a8128c13e3 | BUSINESS_USER | raul@hitbox.gg | 2024-11-13T01:02:30.623Z |
+| 1953367850253023428 | bf578552-483f-48b2-8658-92907d2bdb9b | BUSINESS_OWNER | gino@hitbox.gg | 2024-11-13T18:35:52.023Z |
 
 ### 2. Config Sheet
 
 Contains bot settings:
 | Key | Value | Type | Description |
 |-----|-------|------|-------------|
-| POLL_INTERVAL | 300000 | number | Transaction check interval (ms) |
 | BUSINESS_LIMIT | 100000 | number | Monthly spend limit |
 | LARGE_TRANSACTION | 1000 | number | Large transaction threshold |
 | NEW_CARD_REQUESTS | TRUE | boolean | Enable card requests |
@@ -83,9 +82,17 @@ Contains bot settings:
 ### 3. Channels Sheet
 
 Maintains Discord channel mappings:
-
-- channel_name
-- channel_id
+| channel_name | channel_id |
+|-----|-------|------|-------------|
+| pitch-deck | 1060971429455204463 |
+| design-general | 1042881930678501407 |
+| 🔧・issues-backlog | 1226600544420757504 |
+| platform-v1-final | 1085364305358237726 |
+| brand | 1055969609339129856 |
+| 📰・marketing | 1141555243151282296 |
+| 🛋 Raul's Office 🖥 | 1273810818466709535 |
+| 🐶metagotchi | 1043281989689671690 |
+| 🚀・product | 1140507864746709014 |
 
 ## Usage
 
@@ -115,7 +122,6 @@ The bot monitors transactions and sends alerts to the configured Discord channel
   - Link to transaction
 
 - Large transactions (above threshold) include:
-  - @here mention
   - Warning emoji
   - Additional visibility formatting
   - Immediate review request
@@ -127,7 +133,6 @@ The bot requires the following Discord permissions:
 - Read Messages
 - Send Messages
 - Create Message Components
-- Mention @here
 - Manage Channels (for channel scanning)
 - View Channel History
 
@@ -137,6 +142,6 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ## Acknowledgments
 
-- Ramp API Documentation
-- Discord.js Community
-- Google Sheets API Documentation
+- [Ramp API](https://docs.ramp.com/developer-api/v1/overview/introduction)
+- [Discord.js](https://github.com/discordjs/discord.js)
+- [Google Sheets API](https://developers.google.com/sheets/api/guides/concepts)
