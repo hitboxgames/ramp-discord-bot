@@ -111,12 +111,6 @@ export async function sendTransactionMessages(
 
     try {
       await channel.send({ content, components });
-
-      if (isLargeTransaction) {
-        const alertMessage = createLargeTransactionAlert(transaction);
-        await channel.send(alertMessage);
-      }
-
       console.log(`Transaction alert sent to channel: ${TEXT_CHANNEL_ALERTS}`);
     } catch (error) {
       console.error(`Error sending message to ${TEXT_CHANNEL_ALERTS}:`, error);
@@ -142,16 +136,15 @@ function createTransactionMessage(
     : "N/A";
 
   const content = `
-${isLargeTransaction ? "🚨 **LARGE TRANSACTION ALERT**" : ""}
+${isLargeTransaction ? "🚨 **LARGE TRANSACTION ALERT** 🚨" : ""}
 > **Card Holder**: ${cardHolder}
 > **Amount**: ${formatAmount(transaction.amount)} ${
     transaction.currency_code || "USD"
   }
-> **Merchant**: ${transaction.merchant_name || "N/A"}
-> **Category**: ${transaction.sk_category_name || "N/A"}`;
+> **Merchant**: ${transaction.merchant_name || "N/A"}`;
 
   const button = new ButtonBuilder()
-    .setLabel("View Transaction")
+    .setLabel("Review Transaction")
     .setStyle(ButtonStyle.Link)
     .setURL(`https://demo.ramp.com/expenses/transactions/${transaction.id}`);
 
@@ -161,23 +154,6 @@ ${isLargeTransaction ? "🚨 **LARGE TRANSACTION ALERT**" : ""}
     content,
     components: [row],
   };
-}
-
-function createLargeTransactionAlert(transaction: any): string {
-  const cardHolder = transaction.card_holder
-    ? `${transaction.card_holder.first_name || ""} ${
-        transaction.card_holder.last_name || ""
-      }`.trim()
-    : "N/A";
-
-  return `@here **LARGE TRANSACTION DETECTED**
-> A transaction exceeding the configured threshold has been recorded
-> **Amount**: ${formatAmount(transaction.amount)}
-> **Card Holder**: ${cardHolder}
-> **Merchant**: ${transaction.merchant_name || "N/A"}
-> **Category**: ${transaction.sk_category_name || "N/A"}
-> 
-> Please review this transaction as soon as possible.`;
 }
 
 function formatAmount(amount: number | null | undefined): string {

@@ -61,7 +61,7 @@ export async function executeInvite(interaction: ChatInputCommandInteraction) {
 
     const roleInput = new TextInputBuilder()
       .setCustomId("role")
-      .setLabel("Role (ADMIN, USER, BOOKKEEPER)")
+      .setLabel("Role (Only USER supported for now.)")
       .setStyle(TextInputStyle.Short)
       .setPlaceholder("Enter role")
       .setRequired(true);

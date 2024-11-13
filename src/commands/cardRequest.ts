@@ -97,7 +97,8 @@ export async function executeCardRequest(
       .setCustomId("autoLock")
       .setLabel("Until When?")
       .setStyle(TextInputStyle.Short)
-      .setPlaceholder("MM/DD/YYYY");
+      .setPlaceholder("MM/DD/YYYY")
+      .setRequired(false);
 
     modal.addComponents(
       new ActionRowBuilder<TextInputBuilder>().addComponents(cardNameInput),
@@ -334,7 +335,8 @@ export async function handleCardButtonInteraction(
       .setCustomId("autoLock")
       .setLabel("Until When? (MM/DD/YYYY)")
       .setStyle(TextInputStyle.Short)
-      .setValue(autoLock);
+      .setValue(autoLock)
+      .setRequired(false);
 
     modal.addComponents(
       new ActionRowBuilder<TextInputBuilder>().addComponents(cardNameInput),
