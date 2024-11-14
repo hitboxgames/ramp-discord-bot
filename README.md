@@ -61,29 +61,23 @@ GUILD_ID=your_discord_server_id
 The bot uses a Google Spreadsheet for configuration. The spreadsheet should have three sheets:
 
 ### 1. Verified Users Sheet
-
-Tracks verified users and their associations:
-| **discordId** | **rampId** | **rampRole** | **email** | **verifiedAt** |
-|-----|-------|------|-------------|
+| discordId | rampId | rampRole | email | verifiedAt |
+|-----------|---------|----------|--------|------------|
 | 19169470762411123225 | 01932303-145e-7126-abdb-19a8128c13e3 | BUSINESS_USER | raul@hitbox.gg | 2024-11-13T01:02:30.623Z |
 | 1953367850253023428 | bf578552-483f-48b2-8658-92907d2bdb9b | BUSINESS_OWNER | gino@hitbox.gg | 2024-11-13T18:35:52.023Z |
 
 ### 2. Config Sheet
-
-Contains bot settings:
 | Key | Value | Type | Description |
 |-----|-------|------|-------------|
-| BUSINESS_LIMIT | 100000 | number | Monthly spend limit |
-| LARGE_TRANSACTION | 1000 | number | Large transaction threshold |
-| NEW_CARD_REQUESTS | TRUE | boolean | Enable card requests |
-| MONTHLY_SPEND_REPORT | TRUE | boolean | Enable monthly reports |
-| TEXT_CHANNEL_ALERTS | ramp-transactions | string | Alert channel name |
+| MONITOR_TRANSACTIONS | TRUE | boolean | Get new transaction alerts |
+| LARGE_TRANSACTION | 1000 | number | Large transaction alert amount |
+| NEW_CARD_REQUESTS | TRUE | boolean | Allow people to make new card requests |
+| MONTHLY_SPEND_REPORT | TRUE | boolean | Get monthly spend report alerts |
+| TEXT_CHANNEL_ALERTS | ramp-transactions | string | Choose which discord channel to get alerts |
 
 ### 3. Channels Sheet
-
-Maintains Discord channel mappings:
-| **channel_name** | **channel_id** |
-|-----|-------|------|-------------|
+| channel_name | channel_id |
+|-------------|------------|
 | pitch-deck | 1060971429455204463 |
 | design-general | 1042881930678501407 |
 | 🔧・issues-backlog | 1226600544420757504 |
@@ -91,8 +85,7 @@ Maintains Discord channel mappings:
 | brand | 1055969609339129856 |
 | 📰・marketing | 1141555243151282296 |
 | 🛋 Raul's Office 🖥 | 1273810818466709535 |
-| 🐶metagotchi | 1043281989689671690 |
-| 🚀・product | 1140507864746709014 |
+|
 
 ## Usage
 
